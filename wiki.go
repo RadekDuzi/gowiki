@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -44,9 +43,9 @@ func loadPage(title string) (*Page, error) {
 	return &Page{Title: title, Body: body}, nil
 }
 
-func renderTemplate(w http.ResponseWriter, tmpl, p *Page) {
+func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 
-	t, err := template.ExecuteTempalte(w, tmpl+".html", p)
+	err := templates.ExecuteTemplate(w, tmpl+".html", p)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -94,7 +93,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 
 	body := r.FormValue("body")
 	p := &Page{Title: title, Body: []byte(body)}
-	err := p.save()
+	err = p.save()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
